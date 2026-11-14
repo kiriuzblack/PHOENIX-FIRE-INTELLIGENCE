@@ -1,0 +1,71 @@
+﻿table,column_name,original_column,description,unit,data_type,non_null_records,missing_records,definition_status
+integrated_experiments,test_id,id_ensayo,Normalized experimental test identifier,,object,285,0,Documented
+integrated_experiments,experiment,experimento,Source experimental program,,object,285,0,Documented
+integrated_experiments,record_type,tipo_registro,Classification of record content,,object,283,2,Documented
+integrated_experiments,material,material,Reported fuel or sample material,,object,283,2,Documented
+integrated_experiments,oxygen_percent,oxigeno_pct,Representative oxygen concentration,%,float64,285,0,Documented
+integrated_experiments,pressure_kpa,presion_kpa,Normalized ambient pressure,kPa,float64,274,11,Documented
+integrated_experiments,burn_time_s,tiempo_combustion_s,Numerically reported combustion duration,s,float64,275,10,Documented
+integrated_experiments,airflow_m_s,flujo_m_s,Normalized airflow speed,m/s,float64,11,274,Documented
+integrated_experiments,original_result,resultado_original,Original experimental outcome text,,object,282,3,Documented
+integrated_experiments,source_file,fuente_archivo,Original NASA CSV filename,,object,285,0,Documented
+integrated_experiments,oxygen_min_original,oxigeno_min,Previously extracted oxygen lower bound; verify interpretation against the source,,float64,8,277,Documented
+integrated_experiments,oxygen_max_original,oxigeno_max,Previously extracted oxygen upper bound; verify interpretation against the source,,float64,8,277,Documented
+integrated_experiments,oxygen_qualifier,calificador_oxigeno,Qualifier associated with reported oxygen,,object,9,276,Documented
+integrated_experiments,original_oxygen_value,oxigeno_original,Original oxygen value preserved as reported,,object,11,274,Documented
+integrated_experiments,hazard_level,nivel_peligro,Fire hazard level; not determined in this dataset,,object,285,0,Documented
+integrated_experiments,evidence_state,estado_evidencia,Previously assigned evidence status,,object,283,2,Documented
+integrated_experiments,oxygen_original_text,oxigeno_texto_original,Original reported oxygen text,,object,9,276,Documented
+integrated_experiments,oxygen_min_percent,oxigeno_min_pct,Lower bound of a reported oxygen interval,%,float64,2,283,Documented
+integrated_experiments,oxygen_max_percent,oxigeno_max_pct,Upper bound of a reported oxygen interval,%,float64,2,283,Documented
+integrated_experiments,oxygen_value_type,tipo_oxigeno,Oxygen value representation category,,object,9,276,Documented
+evidence_matrix,test_id,id_ensayo,Normalized experimental test identifier,,object,285,0,Documented
+evidence_matrix,experiment,experimento,Source experimental program,,object,285,0,Documented
+evidence_matrix,record_type,tipo_registro,Classification of record content,,object,283,2,Documented
+evidence_matrix,material,material,Reported fuel or sample material,,object,283,2,Documented
+evidence_matrix,oxygen_percent,oxigeno_pct,Representative oxygen concentration,%,float64,285,0,Documented
+evidence_matrix,pressure_kpa,presion_kpa,Normalized ambient pressure,kPa,float64,274,11,Documented
+evidence_matrix,burn_time_s,tiempo_combustion_s,Numerically reported combustion duration,s,float64,275,10,Documented
+evidence_matrix,airflow_m_s,flujo_m_s,Normalized airflow speed,m/s,float64,11,274,Documented
+evidence_matrix,original_result,resultado_original,Original experimental outcome text,,object,282,3,Documented
+evidence_matrix,source_file,fuente_archivo,Original NASA CSV filename,,object,285,0,Documented
+evidence_matrix,oxygen_min_original,oxigeno_min,Previously extracted oxygen lower bound; verify interpretation against the source,,float64,8,277,Documented
+evidence_matrix,oxygen_max_original,oxigeno_max,Previously extracted oxygen upper bound; verify interpretation against the source,,float64,8,277,Documented
+evidence_matrix,oxygen_qualifier,calificador_oxigeno,Qualifier associated with reported oxygen,,object,9,276,Documented
+evidence_matrix,original_oxygen_value,oxigeno_original,Original oxygen value preserved as reported,,object,11,274,Documented
+evidence_matrix,hazard_level,nivel_peligro,Fire hazard level; not determined in this dataset,,object,285,0,Documented
+evidence_matrix,evidence_state,estado_evidencia,Previously assigned evidence status,,object,283,2,Documented
+evidence_matrix,quality_flag_count,total_incidencias,Number of documented data-quality flags,count,int64,285,0,Documented
+evidence_matrix,high_priority_flags,incidencias_altas,Number of high-priority review flags,count,int64,285,0,Documented
+evidence_matrix,medium_priority_flags,incidencias_medias,Number of medium-priority review flags,count,int64,285,0,Documented
+evidence_matrix,quality_notes,observaciones,Documented review observations,,object,285,0,Documented
+evidence_matrix,available_variables,variables_disponibles,Number of available selected variables,count,int64,285,0,Documented
+evidence_matrix,data_coverage,cobertura_datos,Availability category for five selected fields,,object,285,0,Documented
+evidence_matrix,review_priority,prioridad_revision,Data review priority; not a fire hazard rating,,object,285,0,Documented
+evidence_matrix,evidence_status,clasificacion_evidencia,Automated evidence-review status,,object,285,0,Documented
+evidence_matrix,oxygen_original_text,oxigeno_texto_original,Original reported oxygen text,,object,9,276,Documented
+evidence_matrix,oxygen_min_percent,oxigeno_min_pct,Lower bound of a reported oxygen interval,%,float64,2,283,Documented
+evidence_matrix,oxygen_max_percent,oxigeno_max_pct,Upper bound of a reported oxygen interval,%,float64,2,283,Documented
+evidence_matrix,oxygen_value_type,tipo_oxigeno,Oxygen value representation category,,object,9,276,Documented
+saffire_classification,experiment,experimento,Source experimental program,,object,11,0,Documented
+saffire_classification,sample_id,muestra,Experimental sample identifier,,object,11,0,Documented
+saffire_classification,material,material,Reported fuel or sample material,,object,9,2,Documented
+saffire_classification,original_material,material_original,Material text preserved from the source,,object,9,2,Documented
+saffire_classification,original_oxygen_value,oxigeno_original,Original oxygen value preserved as reported,,object,11,0,Documented
+saffire_classification,estimated_oxygen_percent,oxigeno_estimado_pct,Derived representative oxygen concentration,%,float64,11,0,Documented
+saffire_classification,airflow_m_s,flujo_m_s,Normalized airflow speed,m/s,float64,11,0,Documented
+saffire_classification,burn_time_s,tiempo_combustion_s,Numerically reported combustion duration,s,float64,7,4,Documented
+saffire_classification,original_burn_time,tiempo_original,Original combustion duration or qualitative text,,object,11,0,Documented
+saffire_classification,flow_direction,direccion_flujo,Reported airflow direction relative to flame,,object,11,0,Documented
+saffire_classification,original_thickness,espesor_original,Original sample thickness as reported,,object,11,0,Documented
+saffire_classification,thickness_mm,espesor_mm,Parsed thickness; verify ambiguous source values,mm,float64,5,6,Documented
+saffire_classification,original_spread_value,propagacion_original,Original propagation-related source text,,object,5,6,Documented
+saffire_classification,reported_spread_mm_s_unverified,propagacion_mm_s,Parsed propagation-related value; source heading and units require verification,mm/s,float64,2,9,Documented
+saffire_classification,source_file,fuente_archivo,Original NASA CSV filename,,object,11,0,Documented
+saffire_classification,spread_measurement_validated,propagacion_validada,Whether the propagation measurement was validated,,int64,11,0,Documented
+saffire_classification,requires_review,requiere_revision,Whether a record is flagged for review,,int64,11,0,Documented
+saffire_classification,hazard_level,nivel_peligro,Fire hazard level; not determined in this dataset,,object,11,0,Documented
+saffire_classification,reported_behavior,comportamiento_reportado,Descriptive combustion outcome category,,object,11,0,Documented
+saffire_classification,quality_status,estado_calidad,Preliminary SAFFIRE data-quality category,,object,11,0,Documented
+saffire_classification,review_priority,prioridad_revision,Data review priority; not a fire hazard rating,,object,11,0,Documented
+saffire_classification,evidence_type,tipo_evidencia,Type of experimental evidence,,object,11,0,Documented

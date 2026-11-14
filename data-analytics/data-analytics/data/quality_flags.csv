@@ -1,0 +1,13 @@
+﻿experiment,sample_id,flagged_variable,original_value,description,review_priority,review_status,test_id
+FLEX,114,Pressure,0.0,Missing or non-positive pressure,High,Pending,FLEX-114
+SAFFIRE-I,S1,Oxygen,21.5 - 21.7,Approximate value or reported range,Medium,Pending,SAFFIRE-I-S1
+SAFFIRE-I,S2,Oxygen,~ 21.5,Approximate value or reported range,Medium,Pending,SAFFIRE-I-S2
+SAFFIRE-II,2-1,Burn time,Insignificant,Qualitative experimental result,Medium,Pending,SAFFIRE-II-2-1
+SAFFIRE-II,2-2,Burn time,Insignificant,Qualitative experimental result,Medium,Pending,SAFFIRE-II-2-2
+SAFFIRE-II,2-3,Burn time,Insignificant,Qualitative experimental result,Medium,Pending,SAFFIRE-II-2-3
+SAFFIRE-II,2-4,Thickness,037 mm,Ambiguous numeric format,High,Pending,SAFFIRE-II-2-4
+SAFFIRE-II,2-4,Burn time,Insignificant,Qualitative experimental result,Medium,Pending,SAFFIRE-II-2-4
+SAFFIRE-II,2-5,Thickness,037 mm,Ambiguous numeric format,High,Pending,SAFFIRE-II-2-5
+SAFFIRE-II,2-6,Material,,Unidentified material,High,Pending,SAFFIRE-II-2-6
+SAFFIRE-II,2-6,Thickness,037 mm,Ambiguous numeric format,High,Pending,SAFFIRE-II-2-6
+SAFFIRE-II,2-9,Material,,Unidentified material,High,Pending,SAFFIRE-II-2-9
