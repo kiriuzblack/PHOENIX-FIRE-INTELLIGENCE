@@ -1,0 +1,1 @@
+El índice RAG se genera aquí. El almacenamiento gratuito puede ser efímero; para producción se requiere almacenamiento persistente.\n

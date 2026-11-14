@@ -1,0 +1,1 @@
+Coloca aquí los PDF científicos autorizados. La carga inicial se realiza mediante POST /documents en /docs.\n
