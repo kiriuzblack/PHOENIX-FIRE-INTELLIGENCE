@@ -1,0 +1,789 @@
+
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import type { ReactNode, RefObject } from "react";
+import * as THREE from "three";
+
+type Scene3DProps = {
+  progress: RefObject<number>;
+  selected: number;
+  labZoom: RefObject<{ value: number }>;
+};
+
+/* ========================================
+   PHOENIX — PLASMA SHADER
+   ======================================== */
+
+const flameVertex = `
+  uniform float uTime;
+
+  varying vec3 vNormal;
+  varying vec3 vView;
+  varying vec3 vPosition;
+
+  void main() {
+    vec3 p = position;
+
+    float waveA =
+      sin(p.x * 7.0 + uTime * 1.4) *
+      cos(p.y * 6.0 - uTime * 1.1);
+
+    float waveB =
+      sin(p.z * 10.0 + p.y * 4.0 + uTime * 1.7);
+
+    float waveC =
+      sin(p.x * 13.0 - p.z * 8.0 - uTime * 0.8);
+
+    float displacement =
+      waveA * 0.075 +
+      waveB * 0.055 +
+      waveC * 0.028;
+
+    p += normal * displacement;
+
+    vec4 viewPosition =
+      modelViewMatrix * vec4(p, 1.0);
+
+    vPosition = p;
+    vNormal = normalize(normalMatrix * normal);
+    vView = -viewPosition.xyz;
+
+    gl_Position =
+      projectionMatrix * viewPosition;
+  }
+`;
+
+const flameFragment = `
+  uniform float uTime;
+  uniform vec3 uColor;
+
+  varying vec3 vNormal;
+  varying vec3 vView;
+  varying vec3 vPosition;
+
+  void main() {
+    float a = sin(
+      vPosition.x * 11.0 +
+      sin(vPosition.y * 7.0 + uTime)
+      + uTime * 1.3
+    );
+
+    float b = cos(
+      vPosition.z * 9.0 -
+      vPosition.y * 12.0 -
+      uTime * 1.1
+    );
+
+    float c = sin(
+      length(vPosition.xy) * 15.0 -
+      uTime * 2.0
+    );
+
+    float turbulence =
+      a * 0.45 +
+      b * 0.35 +
+      c * 0.20;
+
+    float heat = clamp(
+      0.6 + turbulence * 0.45,
+      0.0,
+      1.0
+    );
+
+    vec3 hotColor = vec3(1.0, 0.58, 0.26);
+
+
+    vec3 color = mix(
+      uColor * 0.72,
+      hotColor,
+      pow(heat, 2.3)
+    );
+
+    float fresnel = pow(
+      1.0 - abs(
+        dot(
+          normalize(vNormal),
+          normalize(vView)
+        )
+      ),
+      1.7
+    );
+
+    float intensity =
+      0.55 + heat * 0.55 + fresnel * 0.6;
+
+
+    float alpha = clamp(
+      0.35 + heat * 0.26 + fresnel * 0.25,
+      0.0,
+      0.92
+    );
+
+    gl_FragColor = vec4(
+      color * intensity,
+      alpha
+    );
+  }
+`;
+
+/* ========================================
+   LLAMA ESFÉRICA EN MICROGRAVEDAD
+   ======================================== */
+
+function PlasmaSphere({
+  color = "#ff6c30",
+  size = 1,
+}: {
+  color?: string;
+  size?: number;
+}) {
+  const group = useRef<THREE.Group>(null);
+  const material = useRef<THREE.ShaderMaterial>(null);
+
+  const uniforms = useMemo(
+    () => ({
+      uTime: { value: 0 },
+      uColor: { value: new THREE.Color(color) },
+    }),
+    [color]
+  );
+
+  useFrame(({ clock }, delta) => {
+    if (material.current) {
+      material.current.uniforms.uTime.value =
+        clock.elapsedTime;
+
+      material.current.uniforms.uColor.value.set(color);
+    }
+
+    if (group.current) {
+      group.current.rotation.y += delta * 0.12;
+
+      group.current.rotation.z =
+        Math.sin(clock.elapsedTime * 0.25) * 0.08;
+    }
+  });
+
+  return (
+    <group ref={group} scale={size}>
+      <mesh>
+        <sphereGeometry args={[1, 72, 56]} />
+
+        <shaderMaterial
+          ref={material}
+          uniforms={uniforms}
+          vertexShader={flameVertex}
+          fragmentShader={flameFragment}
+          transparent
+          depthWrite={false}
+          blending={THREE.NormalBlending}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+
+      <mesh scale={0.52}>
+        <sphereGeometry args={[1, 48, 48]} />
+
+        <meshBasicMaterial
+          color="#fff0c9"
+          transparent
+          opacity={0.28}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
+
+      <mesh scale={1.24}>
+        <sphereGeometry args={[1, 40, 40]} />
+
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.035}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+/* ========================================
+   ÓRBITAS ANIMADAS
+   ======================================== */
+
+function OrbitalRings({
+  color = "#ff9f6c",
+  radius = 2.5,
+}: {
+  color?: string;
+  radius?: number;
+}) {
+  const group = useRef<THREE.Group>(null);
+
+  useFrame((_, delta) => {
+    if (!group.current) return;
+
+    group.current.rotation.y += delta * 0.075;
+    group.current.rotation.z += delta * 0.035;
+  });
+
+  return (
+    <group ref={group}>
+      <mesh rotation={[0.7, 0.3, 0.4]}>
+        <torusGeometry args={[radius, 0.014, 8, 160]} />
+
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.65}
+          depthWrite={false}
+        />
+      </mesh>
+
+      <mesh rotation={[-0.5, 0.8, -0.3]}>
+        <torusGeometry
+          args={[radius * 1.12, 0.01, 8, 160]}
+        />
+
+        <meshBasicMaterial
+          color="#a5caff"
+          transparent
+          opacity={0.36}
+          depthWrite={false}
+        />
+      </mesh>
+
+      <mesh rotation={[1.3, 0.1, 0.7]}>
+        <torusGeometry
+          args={[radius * 0.86, 0.009, 8, 160]}
+        />
+
+        <meshBasicMaterial
+          color="#ffdcad"
+          transparent
+          opacity={0.4}
+          depthWrite={false}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+/* ========================================
+   PARTÍCULAS FLOTANTES
+   ======================================== */
+
+function fract(n: number) {
+  return n - Math.floor(n);
+}
+
+function Stars() {
+  const positions = useMemo(() => {
+    const count = 1000;
+    const data = new Float32Array(count * 3);
+
+    for (let i = 0; i < count; i++) {
+      const a = fract(
+        Math.sin(i * 12.9898 + 1.0) * 43758.5453
+      );
+
+      const b = fract(
+        Math.sin(i * 78.233 + 2.0) * 22578.1459
+      );
+
+      const c = fract(
+        Math.sin(i * 39.425 + 3.0) * 96321.9123
+      );
+
+      data[i * 3] = (a - 0.5) * 75;
+      data[i * 3 + 1] = (b - 0.5) * 48;
+      data[i * 3 + 2] = -115 + c * 135;
+    }
+
+    return data;
+  }, []);
+
+  return (
+    <points>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[positions, 3]}
+        />
+      </bufferGeometry>
+
+      <pointsMaterial
+        color="#afc9e5"
+        size={0.075}
+        sizeAttenuation
+        transparent
+        opacity={0.8}
+        depthWrite={false}
+      />
+    </points>
+  );
+}
+
+function Sparks({
+  color = "#ff9857",
+}: {
+  color?: string;
+}) {
+  const points = useRef<THREE.Points>(null);
+
+  const positions = useMemo(() => {
+    const count = 260;
+    const data = new Float32Array(count * 3);
+
+    for (let i = 0; i < count; i++) {
+      const theta = fract(i * 0.6180339) * Math.PI * 2;
+      const z = fract(i * 0.7548776) * 2 - 1;
+      const radius = 1.3 + fract(i * 0.4142135) * 2.8;
+
+      const xy = Math.sqrt(1 - z * z) * radius;
+
+      data[i * 3] = Math.cos(theta) * xy;
+      data[i * 3 + 1] = Math.sin(theta) * xy;
+      data[i * 3 + 2] = z * radius;
+    }
+
+    return data;
+  }, []);
+
+  useFrame((_, delta) => {
+    if (!points.current) return;
+
+    points.current.rotation.y += delta * 0.035;
+    points.current.rotation.x += delta * 0.012;
+  });
+
+  return (
+    <points ref={points}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[positions, 3]}
+        />
+      </bufferGeometry>
+
+      <pointsMaterial
+        color={color}
+        size={0.055}
+        sizeAttenuation
+        transparent
+        opacity={0.82}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+}
+
+/* ========================================
+   ESCENA 01 — LA LLAMA
+   ======================================== */
+
+function HeroScene() {
+  return (
+    <group position={[2.3, 0, -5]}>
+      <PlasmaSphere size={1.95} />
+
+      <OrbitalRings radius={2.7} />
+
+      <Sparks />
+
+      <pointLight
+        color="#ff6d31"
+        intensity={45}
+        distance={16}
+      />
+    </group>
+  );
+}
+
+/* ========================================
+   ESCENA 02 — ARCHIVO CIENTÍFICO
+   ======================================== */
+
+function ArchiveScene() {
+  const crystal = useRef<THREE.Mesh>(null);
+
+  useFrame(({ clock }, delta) => {
+    if (!crystal.current) return;
+
+    crystal.current.rotation.y += delta * 0.1;
+
+    crystal.current.position.y =
+      Math.sin(clock.elapsedTime * 0.5) * 0.16;
+  });
+
+  return (
+    <group position={[0, 0, -21]}>
+      <mesh ref={crystal} rotation={[0.2, 0.3, 0]}>
+        <icosahedronGeometry args={[1.9, 1]} />
+
+        <meshStandardMaterial
+          color="#4bc9e4"
+          metalness={0.45}
+          roughness={0.22}
+          flatShading
+          transparent
+          opacity={0.84}
+        />
+      </mesh>
+
+      <OrbitalRings
+        color="#8be8ff"
+        radius={3.1}
+      />
+
+      <pointLight
+        color="#42c4ff"
+        intensity={35}
+        distance={12}
+      />
+    </group>
+  );
+}
+
+/* ========================================
+   ESCENA 03 — INVESTIGACIONES NASA
+   ======================================== */
+
+const researchColors = [
+  "#ff7238",
+  "#60caff",
+  "#ff4b34",
+];
+
+function ResearchScene({
+  selected,
+}: {
+  selected: number;
+}) {
+  const color =
+    researchColors[selected] ?? researchColors[0];
+
+  return (
+    <group position={[2.3, 0, -39]}>
+      <PlasmaSphere
+        color={color}
+        size={1.55}
+      />
+
+      <OrbitalRings
+        color={color}
+        radius={2.45}
+      />
+
+      <Sparks color={color} />
+
+      {selected === 0 && (
+        <group position={[0, -1.65, 0]}>
+          <mesh rotation={[0.1, 0, 0.12]}>
+            <boxGeometry args={[3.7, 0.16, 2]} />
+
+            <meshStandardMaterial
+              color="#687385"
+              metalness={0.8}
+              roughness={0.3}
+            />
+          </mesh>
+        </group>
+      )}
+
+      {selected === 1 && (
+        <mesh position={[1.45, 0.9, 0.4]}>
+          <sphereGeometry args={[0.42, 48, 48]} />
+
+          <meshPhysicalMaterial
+            color="#a5e8ff"
+            metalness={0.12}
+            roughness={0.07}
+            transmission={0.2}
+            thickness={0.7}
+            transparent
+            opacity={0.9}
+          />
+        </mesh>
+      )}
+
+      {selected === 2 && (
+        <mesh>
+          <boxGeometry args={[3.4, 2.8, 2.7]} />
+
+          <meshBasicMaterial
+            color="#e7a08b"
+            wireframe
+            transparent
+            opacity={0.22}
+            depthWrite={false}
+          />
+        </mesh>
+      )}
+
+      <pointLight
+        color={color}
+        intensity={42}
+        distance={15}
+      />
+    </group>
+  );
+}
+
+/* ========================================
+   ESCENA 04 — CORREDOR ESPACIAL
+   ======================================== */
+
+function SpaceCorridor() {
+  const rings = useMemo(
+    () => Array.from({ length: 15 }, (_, i) => i),
+    []
+  );
+
+  return (
+    <group>
+      {rings.map((i) => (
+        <mesh
+          key={i}
+          position={[0, 0, -49 - i * 2.1]}
+          rotation={[0, 0, i * 0.13]}
+        >
+          <torusGeometry
+            args={[3.8, 0.03, 8, 96]}
+          />
+
+          <meshBasicMaterial
+            color={i % 3 === 0 ? "#ffa36b" : "#6a9ab9"}
+            transparent
+            opacity={i % 3 === 0 ? 0.75 : 0.38}
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
+
+      {[-3.1, 3.1].map((x) => (
+        <mesh
+          key={x}
+          position={[x, -2.15, -64]}
+        >
+          <boxGeometry args={[0.035, 0.035, 32]} />
+
+          <meshBasicMaterial
+            color="#7fb5d4"
+            transparent
+            opacity={0.65}
+          />
+        </mesh>
+      ))}
+
+      <pointLight
+        position={[0, 0, -60]}
+        color="#72c9ff"
+        intensity={25}
+        distance={25}
+      />
+    </group>
+  );
+}
+
+/* ========================================
+   ESCENA 05 — RENACIMIENTO
+   ======================================== */
+
+function FinaleScene() {
+  return (
+    <group position={[0, 0, -84]}>
+      <PlasmaSphere
+        color="#ff3b20"
+        size={3.1}
+      />
+
+      <OrbitalRings
+        color="#ff9565"
+        radius={4.1}
+      />
+
+      <Sparks color="#ff7a42" />
+
+      <pointLight
+        color="#ff411f"
+        intensity={70}
+        distance={23}
+      />
+    </group>
+  );
+}
+
+/* ========================================
+   RECORRIDO CINEMATOGRÁFICO
+   ======================================== */
+
+const cameraRoute = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(0, 0, 11),
+  new THREE.Vector3(0.8, 0.6, -10),
+  new THREE.Vector3(0.2, 0, -27),
+  new THREE.Vector3(0, 0, -48),
+  new THREE.Vector3(0, 0, -69),
+]);
+
+const targetRoute = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(1.5, 0, -5),
+  new THREE.Vector3(0, 0, -21),
+  new THREE.Vector3(1.7, 0, -39),
+  new THREE.Vector3(0, 0, -62),
+  new THREE.Vector3(0, 0, -84),
+]);
+
+function CameraJourney({
+  progress,
+  labZoom,
+}: {
+  progress: RefObject<number>;
+  labZoom: RefObject<{ value: number }>;
+}) {
+  const focus = useRef(
+    new THREE.Vector3(1.5, 0, -5)
+  );
+
+  useFrame(({ camera }, delta) => {
+    const p = THREE.MathUtils.clamp(
+      progress.current ?? 0,
+      0,
+      1
+    );
+
+    const targetPosition = cameraRoute.getPoint(p);
+    const targetFocus = targetRoute.getPoint(p);
+
+    // Viaje desde la cámara final hacia el núcleo
+    // de la esfera de PHOENIX (z = -84).
+    const zoom = THREE.MathUtils.smoothstep(
+      THREE.MathUtils.clamp(labZoom.current.value, 0, 1),
+      0,
+      1
+    );
+
+    if (zoom > 0) {
+      targetPosition.lerp(
+        new THREE.Vector3(0, 0, -91),
+        zoom
+      );
+
+      targetFocus.lerp(
+        new THREE.Vector3(0, 0, -105),
+        zoom
+      );
+    }
+
+    
+  const cameraSpeed = THREE.MathUtils.lerp(
+   3.2,
+   6.5,
+    zoom
+    );
+
+  const smooth = 1 - Math.exp(-delta * cameraSpeed);
+
+    camera.position.lerp(targetPosition, smooth);
+    focus.current.lerp(targetFocus, smooth);
+
+    camera.lookAt(focus.current);
+  });
+
+  return null;
+}
+
+/* ========================================
+   COMPONENTE PRINCIPAL 3D
+   ======================================== */
+
+function ChapterScene({
+  progress,
+  from,
+  to,
+  children,
+}: {
+  progress: RefObject<number>;
+  from: number;
+  to: number;
+  children: ReactNode;
+}) {
+  const group = useRef<THREE.Group>(null);
+
+  useFrame(() => {
+    if (!group.current) return;
+
+    const current = progress.current ?? 0;
+
+    group.current.visible =
+      current >= from && current <= to;
+  });
+
+  return <group ref={group}>{children}</group>;
+}
+
+export default function Scene3D({ progress, selected, labZoom }: Scene3DProps) {
+  return (
+    <Canvas
+      camera={{
+        position: [0, 0, 11],
+        fov: 48,
+        near: 0.1,
+        far: 250,
+      }}
+      dpr={[1, 1.5]}
+      gl={{
+        antialias: true,
+        powerPreference: "high-performance",
+      }}
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
+    >
+      <color
+        attach="background"
+        args={["#050710"]}
+      />
+
+      <ambientLight intensity={0.4} />
+
+      <directionalLight
+        position={[5, 7, 8]}
+        intensity={2}
+        color="#c4dfff"
+      />
+
+  
+<Stars />
+
+<ChapterScene progress={progress} from={0} to={0.19}>
+  <HeroScene />
+</ChapterScene>
+
+<ChapterScene progress={progress} from={0.12} to={0.4}>
+  <ArchiveScene />
+</ChapterScene>
+
+<ChapterScene progress={progress} from={0.35} to={0.7}>
+  <ResearchScene selected={selected} />
+</ChapterScene>
+
+<ChapterScene progress={progress} from={0.65} to={0.89}>
+  <SpaceCorridor />
+</ChapterScene>
+
+<ChapterScene progress={progress} from={0.84} to={1}>
+  <FinaleScene />
+</ChapterScene>
+
+
+
+
+      
+      <CameraJourney progress={progress} labZoom={labZoom} />
+    </Canvas>
+  );
+}

@@ -1,0 +1,202 @@
+
+.phoenix-ai {
+  margin-top: 36px;
+  padding: 30px;
+  background: #0a1422;
+  border: 1px solid #354d65;
+  color: #f5f7fb;
+}
+
+.phoenix-ai-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.phoenix-ai-eyebrow {
+  color: #ff965b;
+  font-size: 10px;
+  letter-spacing: 2px;
+  font-weight: 800;
+}
+
+.phoenix-ai-heading h3 {
+  margin: 13px 0;
+  font-size: clamp(30px, 5vw, 60px);
+  letter-spacing: -0.06em;
+}
+
+.phoenix-ai-heading p {
+  max-width: 500px;
+  color: #aabed4;
+  line-height: 1.7;
+  font-size: 13px;
+}
+
+.phoenix-ai-symbol {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border: 1px solid #ff965b;
+  color: #ff965b;
+}
+
+.phoenix-ai-context {
+  margin: 22px 0;
+  color: #ffae7c;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.phoenix-ai-messages {
+  min-height: 230px;
+  max-height: 450px;
+  overflow-y: auto;
+  padding: 22px;
+  background: #07101c;
+  border: 1px solid #263c53;
+}
+
+.phoenix-ai-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 180px;
+  gap: 12px;
+  color: #ff995e;
+}
+
+.phoenix-ai-welcome p {
+  max-width: 380px;
+  color: #a6bad0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.phoenix-ai-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.phoenix-ai-message.user {
+  flex-direction: row-reverse;
+}
+
+.phoenix-ai-avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  color: #ff965b;
+  border: 1px solid #51657d;
+}
+
+.phoenix-ai-bubble {
+  max-width: 82%;
+  padding: 15px;
+  background: #17283e;
+  border: 1px solid #354b64;
+}
+
+.phoenix-ai-message.user .phoenix-ai-bubble {
+  background: #33251f;
+  border-color: #775039;
+}
+
+.phoenix-ai-bubble p {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+  font-size: 13px;
+}
+
+.phoenix-ai-bubble small {
+  display: block;
+  margin-top: 12px;
+  color: #9bb1ca;
+  font-size: 10px;
+}
+
+.phoenix-ai-sources {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid #52627a;
+  font-size: 11px;
+}
+
+.phoenix-ai-sources a {
+  color: #8ed6ff;
+}
+
+.phoenix-ai-loading {
+  color: #ff995e;
+  font-size: 12px;
+}
+
+.phoenix-ai-error {
+  color: #ff9999;
+  font-size: 12px;
+}
+
+.phoenix-ai-form {
+  display: flex;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+.phoenix-ai-form textarea {
+  flex: 1;
+  min-width: 0;
+  resize: vertical;
+  padding: 15px;
+  background: #101e31;
+  color: white;
+  border: 1px solid #48617c;
+  outline: none;
+  font: inherit;
+  font-size: 13px;
+}
+
+.phoenix-ai-form button {
+  align-self: stretch;
+  width: 55px;
+  border: 0;
+  background: #ff965b;
+  color: #170c08;
+}
+
+.phoenix-ai-form button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.phoenix-ai-disclaimer {
+  margin-top: 15px;
+  color: #879bb3;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .phoenix-ai {
+    padding: 17px;
+  }
+
+  .phoenix-ai-messages {
+    padding: 12px;
+  }
+
+  .phoenix-ai-bubble {
+    max-width: 90%;
+  }
+}

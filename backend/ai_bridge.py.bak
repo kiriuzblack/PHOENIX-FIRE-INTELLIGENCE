@@ -1,0 +1,31 @@
+
+def consultar_ia(
+    question: str,
+    experiment_ids: list[str],
+) -> dict:
+    """
+    Conector entre FastAPI y el motor Gemini.
+
+    Modo actual: demostración.
+    Se reemplazará por una llamada al módulo ai/
+    cuando se integre el trabajo del compañero.
+    """
+
+    selected = (
+        ", ".join(experiment_ids)
+        if experiment_ids
+        else "ninguna"
+    )
+
+    return {
+        "answer": (
+            "PHOENIX AI está preparado para recibir preguntas. "
+            "El motor Gemini todavía no está conectado. "
+            f"Investigaciones seleccionadas: {selected}. "
+            "Esta es una respuesta de prueba, "
+            "no un análisis científico."
+        ),
+        "sources": [],
+        "grounded": False,
+        "mode": "demo",
+    }

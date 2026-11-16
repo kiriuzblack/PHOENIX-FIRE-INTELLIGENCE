@@ -1,0 +1,31 @@
+
+import "./LabEntrance.css";
+
+export default function LabEntrance() {
+  return (
+    <div className="lab-entry" aria-hidden="true">
+      <div className="lab-entry-tunnel">
+        <div className="lab-entry-ring ring-1" />
+        <div className="lab-entry-ring ring-2" />
+        <div className="lab-entry-ring ring-3" />
+        <div className="lab-entry-core">
+          <span>PHOENIX</span>
+          <strong>LAB / ACCESS</strong>
+        </div>
+      </div>
+
+      <div className="lab-entry-door lab-entry-left" />
+      <div className="lab-entry-door lab-entry-right" />
+
+      <div className="lab-entry-caption">
+        <span>PHOENIX FIRE INTELLIGENCE</span>
+        <strong>ENTERING RESEARCH LAB</strong>
+        <small>INITIALIZING SCIENTIFIC INTERFACE</small>
+      </div>
+
+      <div className="lab-entry-bottom">
+        MICROGRAVITY RESEARCH / 2026
+      </div>
+    </div>
+  );
+}
